@@ -74,17 +74,16 @@ class AtronToc {
             $genre=$this->get_id3('genre',$info,true);
             $trck=$this->get_id3('track',$info);
 
-            fwrite($fHandle,"SONG
-FILE={$filename}
-DIR ={$dir}
-TIT2={$title}
-TALB={$album}
-TPE1={$artist}
-TCON={$genre}
-TRCK={$trck}
-TLEN=0
-END 
-");
+            fwrite($fHandle,"SONG\n");
+            fwrite($fHandle,"FILE={$filename}\n");
+            fwrite($fHandle,"DIR ={$dir}\n");
+            if($title != "--") fwrite($fHandle,"TIT2={$title}\n");
+            if($album != "--") fwrite($fHandle,"TALB={$album}\n");
+            if($artist != "--") fwrite($fHandle,"TPE1={$artist}\n");
+            if($genre != "--") fwrite($fHandle,"TCON={$genre}\n");
+            if($trck != "--") fwrite($fHandle,"TRCK={$trck}\n");
+            fwrite($fHandle,"TLEN=0\n");
+            fwrite($fHandle,"END \n");
             $this->count++;
           }
         }
