@@ -30,9 +30,18 @@ class AtronToc {
     echo "\nAdded {$this->count} files to the TOC file.\n";
   }
 
-  private function get_id3($tag_name, $info_array) {
+  private function get_id3($tag_name, $info_array, $whole_array=false) {
     if(!empty($info_array['comments'][$tag_name][0])) {
-      return $info_array['comments'][$tag_name][0];
+      if($whole_array) {
+        $result="";
+        foreach ($info_array['comments'][$tag_name] as $val) {
+          $result .= $val.'; ';
+        }
+        if(!empty($result)) $result = substr($result,0,strlen($result)-2);
+        return($result);
+      } else {
+        return $info_array['comments'][$tag_name][0];
+      }
     } else {
       return "--";
     }
@@ -62,12 +71,11 @@ class AtronToc {
             $title=$this->get_id3('title', $info);
             $artist=$this->get_id3('artist', $info);
             $album=$this->get_id3('info', $info);
-            $genre=$this->get_id3('genre',$info);
+            $genre=$this->get_id3('genre',$info,true);
             $trck=$this->get_id3('track',$info);
 
-            fwrite($fHandle,"
-SONG
-FILE= {$filename}
+            fwrite($fHandle,"SONG
+FILE={$filename}
 DIR ={$dir}
 TIT2={$title}
 TALB={$album}
@@ -75,7 +83,7 @@ TPE1={$artist}
 TCON={$genre}
 TRCK={$trck}
 TLEN=0
-END
+END 
 ");
             $this->count++;
           }
